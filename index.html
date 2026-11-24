@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1f7a4d">
+<meta name="description" content="Arrête le porno en faisant pousser ton arbre : séries, XP, défis, bouton SOS.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Racines">
+<title>Racines — libre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE: complice, chaleureux, jamais moralisateur
+   IDEA: un arbre qu'on fait pousser chaque jour sans porno
+   PICTURE: l'arbre en SVG qui grandit avec la série
+   COLOUR/TYPE: vert forêt, sauge, accent corail; Nunito ronde
+   LAYOUT: arbre + compteur, gros bouton SOS, défis, badges, raisons */
+:root{color-scheme:light dark;
+--bg:light-dark(#eef3ea,#0f1d17);--card:light-dark(#ffffff,#172a21);--ink:light-dark(#10261d,#e6f0e9);
+--mute:light-dark(#5b6f64,#9bb3a6);--g:light-dark(#1f7a4d,#4fc488);--g2:light-dark(#2f9a62,#7fdca9);
+--acc:#ff6b4a;--line:light-dark(#d6e2d6,#26402f);--sky1:light-dark(#bfe3f2,#0d2233);--sky2:light-dark(#eef7e6,#24433a);--sky:light-dark(#dcebd9,#132a20)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Nunito,system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:1000px;margin:0 auto;padding:clamp(16px,3vw,32px) max(4vw,14px) 60px}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.05;margin:0 0 4px;font-weight:900;text-wrap:balance}
+h2{font-size:22px;margin:0 0 12px;font-weight:900}
+.sub{color:var(--mute);margin:0 0 18px}
+.hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px;align-items:stretch}
+.night{display:none}
+:root[data-theme=dark] .sun{display:none}:root[data-theme=dark] .night{display:inline}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .sun{display:none}:root:not([data-theme=light]) .night{display:inline}}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+#themeBtn{flex:none;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;gap:8px}
+#themeBtn svg{width:20px;height:20px}
+.tree{background:var(--sky);border-radius:24px;position:relative;min-height:320px;overflow:hidden}
+.tree svg{position:absolute;inset:0;width:100%;height:100%}
+.stat{background:var(--card);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:12px;border:1px solid var(--line)}
+.big{font-size:clamp(56px,10vw,84px);font-weight:900;line-height:1;color:var(--g)}
+.big small{font-size:22px;color:var(--ink);font-weight:800;margin-left:6px}
+.lvl{font-weight:800}.meter{height:12px;border-radius:9px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--g),var(--g2));border-radius:9px;transition:width .6s}
+.row{display:flex;gap:10px;flex-wrap:wrap}.kv{flex:1 1 90px;background:var(--bg);border-radius:14px;padding:8px 12px}
+.kv b{display:block;font-size:22px}.kv span{font-size:13px;color:var(--mute)}
+button{font:inherit;font-weight:800;min-height:44px;border-radius:14px;border:0;padding:10px 16px;cursor:pointer;color:inherit;background:var(--line)}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.sos{width:100%;margin:18px 0;background:var(--acc);color:#fff;font-size:22px;padding:18px;border-radius:20px;box-shadow:0 6px 0 #c94a2e}
+.sos:active{transform:translateY(3px);box-shadow:0 3px 0 #c94a2e}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;margin-top:18px}
+.qt{font-size:clamp(20px,3vw,26px);font-weight:800;line-height:1.3;margin:0;text-wrap:balance}.qa{margin:8px 0 0;color:var(--mute);font-weight:700}
+.truth{font-size:19px;font-weight:700;margin:0}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.ch{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--bg);margin-bottom:8px;font-weight:700}
+.ch .box{flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--g);display:grid;place-items:center;color:#fff}
+.ch.on .box{background:var(--g)}.ch.on{color:var(--mute)}.ch.on .lb{text-decoration:line-through}
+.ch em{margin-left:auto;font-style:normal;color:var(--g);font-size:14px;white-space:nowrap}
+.badges{display:flex;flex-wrap:wrap;gap:10px}
+.bd{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:40px;background:var(--bg);font-weight:700;font-size:14px;opacity:.45}
+.bd i{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--line);font-style:normal;font-weight:900;font-size:13px}
+.bd.on{opacity:1}.bd.on i{background:var(--g);color:#fff}
+textarea{width:100%;font:16px/1.5 Nunito,sans-serif;border-radius:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:12px;min-height:90px}
+.ghost{background:transparent;border:2px solid var(--line)}
+.note{font-size:14px;color:var(--mute)}
+.ov{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(6px);display:none;place-items:center;padding:20px;z-index:9;overflow:auto}
+.ov.show{display:grid}.panel{max-width:520px;width:100%;text-align:center}
+.breath{width:200px;height:200px;margin:10px auto 18px;border-radius:50%;background:radial-gradient(circle at 40% 35%,var(--g2),var(--g));display:grid;place-items:center;color:#fff;font-weight:900;font-size:40px;animation:br 8s ease-in-out infinite}
+.blab{font-weight:800;color:var(--g);margin:0}
+@keyframes br{0%,100%{transform:scale(.72)}50%{transform:scale(1)}}
+#sway{transform-origin:200px 290px;animation:sw 6s ease-in-out infinite}
+@keyframes sw{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1deg)}}
+@media(prefers-reduced-motion:reduce){.breath,#sway{animation:none}}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--g);color:#fff;font-weight:800;padding:12px 20px;border-radius:40px;transition:transform .35s;z-index:10;max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+ul.log{margin:6px 0 0;padding-left:20px;color:var(--mute)}
+@media(max-width:700px){.hero,.grid2{grid-template-columns:minmax(0,1fr)}.tree{min-height:260px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1>Racines</h1><button id="themeBtn" aria-label="Changer de thème"></button></div>
+  <p class="sub">Chaque jour sans porno, ton arbre pousse. Chaque envie que tu laisses passer, c'est de l'XP.</p>
+
+  <div class="hero">
+    <div class="tree"><svg id="tree" viewBox="0 0 400 320" preserveAspectRatio="xMidYMax meet" aria-label="Ton arbre"></svg></div>
+    <div class="stat">
+      <div class="big" id="days">0<small>jours</small></div>
+      <div class="note" id="clock">et 0 h 00 min</div>
+      <div><div class="lvl" id="lvl">Niveau 1 · Graine</div><div class="meter"><i id="bar"></i></div><div class="note" id="xpnote"></div></div>
+      <div class="row">
+        <div class="kv"><b id="wins">0</b><span>envies vaincues</span></div>
+        <div class="kv"><b id="best">0</b><span>record (jours)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="sos" id="sosBtn">J'ai une envie — aide-moi</button>
+
+  <div class="card quote"><p class="note" style="margin:0 0 6px;font-weight:800;color:var(--g)">Pensée du jour</p><p class="qt" id="quote"></p><p class="qa" id="qauth"></p></div>
+
+  <div class="card"><p class="truth" id="truth"></p>
+    <div class="row" style="margin-top:12px"><button class="ghost" id="nextTruth">Un autre rappel</button></div></div>
+
+  <div class="grid2">
+    <div class="card"><h2>Défis du jour</h2><div id="chal"></div><p class="note">+10 XP chacun. Nouveaux défis chaque jour.</p></div>
+    <div class="card"><h2>Badges</h2><div class="badges" id="badges"></div></div>
+  </div>
+
+  <div class="card"><h2>Pourquoi j'arrête</h2>
+    <p class="note">Écris tes vraies raisons. Elles s'afficheront quand l'envie arrive.</p>
+    <textarea id="reasons" placeholder="Ex : je veux retrouver de l'énergie, être plus présent avec ma famille, arrêter de perdre mes soirées…"></textarea></div>
+
+  <div class="grid2">
+    <div class="card"><h2>J'ai craqué</h2>
+      <p class="note">Ça arrive. Ta série repart à zéro, mais ton XP, tes badges et ton record restent : l'arbre garde ses racines.</p>
+      <button class="ghost" id="relapseBtn">Recommencer ma série</button>
+      <div id="trig"></div></div>
+    <div class="card"><h2>Téléphone ↔ PC</h2>
+      <p class="note">Chaque appareil garde sa propre progression. Pour la transférer : copie ta sauvegarde ici, colle-la sur l'autre appareil.</p>
+      <div class="row"><button class="ghost" id="copySave">Copier ma sauvegarde</button><button class="ghost" id="openImport">Importer</button></div></div>
+  </div>
+  <p class="note" style="text-align:center;margin-top:28px"><a href="privacy.html" style="color:inherit">Confidentialité</a> · Tes données restent sur ton appareil.</p>
+</div>
+
+<div class="ov" id="sosOv"><div class="panel">
+  <h2>Laisse passer la vague</h2>
+  <div class="breath" id="timer">90</div>
+  <p class="blab" id="blab">Inspire… puis expire lentement</p>
+  <p class="truth" id="sosMsg" style="min-height:3.2em;margin:14px 0"></p>
+  <p class="note">Pendant ce temps : lève-toi, change de pièce, pose le téléphone face contre la table.</p>
+  <div class="row" style="justify-content:center"><button id="won" style="background:var(--g);color:#fff">L'envie est passée (+30 XP)</button><button class="ghost" id="closeSos">Fermer</button></div>
+</div></div>
+
+<div class="ov" id="relOv"><div class="panel card" style="text-align:left">
+  <h2>Pas grave. On repart.</h2>
+  <p>Une rechute n'efface pas ce que tu as construit. Ce qui compte, c'est de comprendre ce qui l'a déclenchée.</p>
+  <textarea id="trigTxt" placeholder="Facultatif : qu'est-ce qui s'est passé ? (ennui, fatigue, tard le soir, stress…)"></textarea>
+  <div class="row" style="margin-top:12px"><button id="relOk" style="background:var(--g);color:#fff">Recommencer</button><button class="ghost" id="relNo">Annuler</button></div>
+</div></div>
+
+<div class="ov" id="impOv"><div class="panel card" style="text-align:left">
+  <h2>Importer une sauvegarde</h2>
+  <textarea id="impTxt" placeholder="Colle ici le code copié depuis l'autre appareil"></textarea>
+  <div class="row" style="margin-top:12px"><button id="impOk" style="background:var(--g);color:#fff">Importer</button><button class="ghost" id="impNo">Annuler</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+{
+const KEY='racines-v1', DAY=864e5, $=id=>document.getElementById(id);
+const fresh=()=>({start:Date.now(),bank:0,bonus:0,wins:0,best:0,chTotal:0,done:{},reasons:'',triggers:[]});
+let st;
+try{st=Object.assign(fresh(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){st=fresh()}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+
+const TRUTHS=[
+"Une envie, c'est une vague : elle monte, elle culmine, puis elle redescend. Tu n'as rien à faire à part attendre.",
+"Dans 10 minutes, tu seras content de ne pas avoir cédé. Jamais l'inverse.",
+"Ce n'est pas un vrai besoin. C'est une habitude qui réclame son dû.",
+"Le porno ne t'apporte rien : quelques minutes, puis le même vide qu'avant, en pire.",
+"Qu'est-ce que tu ressens vraiment là ? Ennui, stress, fatigue, solitude ? Occupe-toi de ça, pas de l'écran.",
+"Chaque envie que tu laisses passer rend la suivante plus facile à laisser passer.",
+"Pose le téléphone. Lève-toi. Change de pièce. Ça suffit souvent.",
+"Ton cerveau est en train de se réhabituer à vivre sans. C'est inconfortable, et c'est normal.",
+"Ce ne sont pas des vraies personnes, pas une vraie intimité. Tu mérites mieux que ça.",
+"Le temps que tu récupères, c'est du temps pour toi, tes proches, tes projets."];
+const POOL=[["pompes","Faire 20 pompes"],["squats","Faire 40 squats"],["gainage","Tenir 1 minute de gainage"],["marche","Sortir marcher 15 minutes"],["soleil","Prendre l'air dehors 10 minutes"],["appel","Appeler ou écrire à un ami"],["famille","Passer un vrai moment avec ta famille"],["range","Ranger une pièce"],["nuit","Téléphone hors de la chambre ce soir"],["couche","Se coucher avant minuit"],["learn","Apprendre un truc pendant 15 min"],["lire","Lire 10 pages d'un livre"],["respire","5 minutes de respiration calme"],["etire","10 minutes d'étirements"],["merci","Écrire 3 choses positives de ta journée"],["reseaux","1 heure sans réseaux sociaux"],["cuisine","Cuisiner un vrai repas"],["eau","Boire 6 verres d'eau"],["aide","Rendre service à quelqu'un"],["creer","Dessiner, jouer de la musique ou bricoler"],["plan","Écrire ton plan pour demain"],["appli","Supprimer une appli ou un compte qui te tente"],["sport","Faire une séance de sport"],["defi","Envoyer un message gentil à quelqu'un"]];
+const QUOTES=[["Platon","La première et la meilleure des victoires est la conquête de soi."],["Lao Tseu","Celui qui vainc les autres est fort ; celui qui se vainc lui-même est puissant."],["Sénèque","Ce n'est pas parce que les choses sont difficiles que nous n'osons pas, c'est parce que nous n'osons pas qu'elles sont difficiles."],["Épictète","Il y a ce qui dépend de nous, et ce qui ne dépend pas de nous."],["Aristote","C'est en pratiquant la tempérance qu'on devient tempérant, et le courage qu'on devient courageux."],["Héraclite","Il est difficile de lutter contre le désir : ce qu'il veut, il l'achète au prix de l'âme."],["Montaigne","La plus grande chose du monde, c'est de savoir être à soi."],["Pascal","Tout le malheur des hommes vient d'une seule chose : ne pas savoir demeurer en repos dans une chambre."],["Descartes","Tâcher plutôt à me vaincre que la fortune, et à changer mes désirs que l'ordre du monde."],["Sénèque","Se commander à soi-même est le plus grand des pouvoirs."],["Marc Aurèle","L'obstacle à l'action fait avancer l'action. Ce qui barre la route devient la route."],["Marc Aurèle","Le matin, quand tu as du mal à te lever, pense : je me lève pour faire mon travail d'homme."],["Épicure","Rien ne suffit à celui pour qui ce qui suffit est peu."],["Spinoza","Tout ce qui est précieux est aussi difficile que rare."],["Nietzsche","Deviens ce que tu es."],["Sénèque","Il n'y a pas de vent favorable pour celui qui ne sait pas où il va."],["Sénèque","Pendant qu'on remet à plus tard, la vie passe."],["Épictète","Ne demande pas que les choses arrivent comme tu le veux ; veuille qu'elles arrivent comme elles arrivent."],["Confucius","Exige beaucoup de toi-même et attends peu des autres."],["Lao Tseu","Un voyage de mille lieues commence par un premier pas."],["Épictète","Aucun homme n'est libre s'il n'est pas maître de lui-même."]];
+const dayNum=()=>{const n=new Date();return Math.floor((n-new Date(n.getFullYear(),0,0))/DAY)+n.getFullYear()*400};
+const todayCH=()=>{let s=dayNum()%233280;const r=()=>(s=(s*9301+49297)%233280)/233280;const a=POOL.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,6)};
+const LEVELS=[[0,"Graine"],[100,"Pousse"],[300,"Jeune plant"],[700,"Arbuste"],[1500,"Jeune arbre"],[3000,"Arbre solide"],[6000,"Chêne"],[12000,"Forêt"]];
+const BADGES=[["1j","Premier jour",s=>s.mx>=1],["3j","3 jours",s=>s.mx>=3],["7j","Une semaine",s=>s.mx>=7],["14j","Deux semaines",s=>s.mx>=14],["30j","Un mois",s=>s.mx>=30],["60j","Deux mois",s=>s.mx>=60],["90j","90 jours",s=>s.mx>=90],
+["1","Première envie vaincue",s=>st.wins>=1],["10","10 envies vaincues",s=>st.wins>=10],["50","50 envies vaincues",s=>st.wins>=50],["D","10 défis faits",s=>st.chTotal>=10],["R","Raisons écrites",s=>st.reasons.trim().length>10]];
+
+const today=()=>new Date().toDateString();
+const days=()=>(Date.now()-st.start)/DAY;
+const xp=()=>st.bank+Math.floor(days())*50+st.bonus;
+let toastT;
+const toast=t=>{const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),2600)};
+
+function drawTree(d){
+  const g=d<1?0:Math.min(1,.12+.88*Math.sqrt(Math.min(d,90)/90));
+  let s=17; const rnd=()=>(s=(s*9301+49297)%233280)/233280;
+  const F=n=>n.toFixed(1);
+  const depth=d<1?1:2+Math.round(g*5), L=d<1?18:22+37*g, W=d<1?2.5:3+15*g, leafR=d<1?7:5+6*g;
+  let br='',hi='',back='',front='';const tips=[];
+  function branch(x,y,a,len,w,k){
+    const x2=x+Math.sin(a)*len,y2=y-Math.cos(a)*len,bend=(rnd()-.5)*len*.35;
+    const cx=(x+x2)/2+Math.cos(a)*bend,cy=(y+y2)/2+Math.sin(a)*bend;
+    br+=`<path d="M${F(x)} ${F(y)}Q${F(cx)} ${F(cy)} ${F(x2)} ${F(y2)}" stroke-width="${F(w)}"/>`;
+    if(w>3)hi+=`<path d="M${F(x+w*.2)} ${F(y)}Q${F(cx+w*.2)} ${F(cy)} ${F(x2+w*.15)} ${F(y2)}" stroke-width="${F(w*.25)}"/>`;
+    if(k>=depth){tips.push([x2,y2]);return}
+    if(k>=depth-2&&d>=1)tips.push([x2,y2]);
+    const n=rnd()<.25&&k>1?3:2,spread=.38+rnd()*.22;
+    for(let i=0;i<n;i++){const off=n===2?(i?1:-1)*spread:(i-1)*spread*1.15;
+      branch(x2,y2,a+off+(rnd()-.5)*.25,len*(.7+rnd()*.12),w*.66,k+1)}
+  }
+  branch(200,292,(rnd()-.5)*.06,L*1.25,W,1);
+  const shades=[['#2e6b2a','#1c4a1f'],['#4a8f3a','#2c6427'],['#6fae4a','#3f7d30'],['#8cc659','#558f38']];
+  for(const [x,y] of tips){const c=3+Math.floor(rnd()*3);
+    for(let j=0;j<c;j++){const r=leafR*(.8+rnd()*.7),lx=x+(rnd()-.5)*leafR*2.4,ly=y+(rnd()-.6)*leafR*2;
+      back+=`<ellipse cx="${F(lx)}" cy="${F(ly+2)}" rx="${F(r*1.15)}" ry="${F(r)}" fill="url(#l0)"/>`;
+      const sh=1+Math.floor(rnd()*3);
+      front+=`<ellipse cx="${F(lx-r*.25)}" cy="${F(ly-r*.3)}" rx="${F(r*.8)}" ry="${F(r*.7)}" fill="url(#l${sh})" opacity=".95"/>`}}
+  let fr='';const nf=d>=7?Math.min(Math.floor(d/7),14):0;
+  for(let i=0;i<nf&&tips.length;i++){const [x,y]=tips[Math.floor(rnd()*tips.length)];
+    fr+=`<circle cx="${F(x+(rnd()-.5)*8)}" cy="${F(y+4)}" r="${F(3.5+2*g)}" fill="url(#fr)"/>`}
+  let grass='';for(let i=0;i<70;i++){const x=rnd()*440-20,h=5+rnd()*9,y=296+rnd()*24;
+    grass+=`<path d="M${F(x)} ${F(y)}q${F(rnd()*4-2)} ${F(-h/2)} ${F(rnd()*6-3)} ${F(-h)}" stroke="${rnd()<.5?'#3f7d30':'#5a9a3c'}"/>`}
+  const crownW=Math.max(30,L*3.2*g+20);
+  $('tree').innerHTML=`<defs>
+   <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--sky1)"/><stop offset="1" style="stop-color:var(--sky2)"/></linearGradient>
+   <linearGradient id="bark" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4a2f1c"/><stop offset=".6" stop-color="#6b4429"/><stop offset="1" stop-color="#3b2415"/></linearGradient>
+   ${shades.map((c,i)=>`<radialGradient id="l${i}" fx=".35" fy=".3"><stop offset="0" stop-color="${c[0]}"/><stop offset="1" stop-color="${c[1]}"/></radialGradient>`).join('')}
+   <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5f93b8"/><stop offset="1" stop-color="#9fd0e3"/></linearGradient>
+   <radialGradient id="fr" fx=".35" fy=".3"><stop offset="0" stop-color="#ffb199"/><stop offset=".5" stop-color="#ff6b4a"/><stop offset="1" stop-color="#b8341b"/></radialGradient>
+   <radialGradient id="sun"><stop offset="0" stop-color="#fff3c4"/><stop offset=".5" stop-color="#ffd27a"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect x="-400" y="-300" width="1200" height="900" fill="url(#sky)"/>
+  <circle class="sun" cx="330" cy="70" r="60" fill="url(#sun)"/>
+  <g class="night"><circle cx="330" cy="70" r="20" fill="#f3ecd2"/><circle cx="322" cy="64" r="4" fill="#ddd3b4"/><circle cx="338" cy="78" r="3" fill="#ddd3b4"/><g fill="#fff">${Array.from({length:40},(_,i)=>`<circle cx="${F(((i*97)%1200)-400)}" cy="${F((i*53)%150+5)}" r="${(i%3)*.4+.6}" opacity="${.5+(i%4)*.12}"/>`).join("")}</g></g>
+  <g fill="#fff" opacity=".6"><ellipse cx="80" cy="60" rx="34" ry="10"/><ellipse cx="100" cy="52" rx="20" ry="10"/><ellipse cx="250" cy="100" rx="26" ry="7"/><ellipse cx="-60" cy="90" rx="30" ry="8"/><ellipse cx="460" cy="40" rx="30" ry="8"/></g>
+  <path d="M-400 240L-300 150L-220 205L-130 120L-40 190L30 135L110 200L170 150L240 210L310 120L380 185L450 140L530 205L620 150L800 240Z" fill="#a9bfd6"/>
+  <path d="M-130 120L-150 142L-138 138L-128 150L-115 136L-108 140ZM30 135L14 152L26 149L34 158L44 148ZM310 120L290 142L302 139L312 151L322 138L332 144ZM450 140L434 156L446 153L455 161L466 151Z" fill="#fff" opacity=".9"/>
+  <path d="M-400 245L-250 185L-170 220L-60 165L20 215L90 180L180 225L270 170L350 215L430 180L520 225L800 245Z" fill="#7b97b3"/>
+  <path d="M-60 165L-76 180L-64 177L-56 186L-46 176ZM270 170L254 186L266 183L274 192L285 181Z" fill="#fff" opacity=".85"/>
+  <path d="M-400 240${Array.from({length:60},(_,i)=>{const x=-400+i*20,h=10+((i*37)%13);return `L${x} 240L${x+10} ${240-h}L${x+20} 240`}).join('')}L800 248H-400Z" fill="#2f5a3a"/>
+  <rect x="-400" y="244" width="1200" height="40" fill="url(#lake)"/>
+  <path d="M-400 244${Array.from({length:60},(_,i)=>{const x=-400+i*20,h=10+((i*37)%13);return `L${x} 244L${x+10} ${244+h*.8}L${x+20} 244`}).join('')}Z" fill="#2f5a3a" opacity=".25"/>
+  <g stroke="#fff" stroke-linecap="round" opacity=".55" stroke-width="1.4"><path d="M40 256h30M120 262h18M250 254h26M300 266h20M-20 268h22M180 270h14M360 258h24"/></g>
+  <path d="M-400 276Q-50 262 120 274T420 270T800 276V600H-400Z" fill="#6aa84f"/>
+  <path d="M-400 292Q60 278 200 290T800 288V600H-400Z" fill="#4f9440"/>
+  <path d="M-400 306Q100 296 220 304T800 302V600H-400Z" fill="#3f7f34"/>
+  <rect class="night" x="-400" y="-300" width="1200" height="900" fill="#0a1632" opacity=".42"/>
+  <ellipse cx="200" cy="297" rx="${F(crownW*.7)}" ry="${F(5+6*g)}" fill="#1c3b16" opacity=".35"/>
+  <g id="sway">
+   <g fill="none" stroke="url(#bark)" stroke-linecap="round">${br}</g>
+   <g fill="none" stroke="#9a6a44" stroke-linecap="round" opacity=".5">${hi}</g>
+   ${back}${front}${fr}
+  </g>
+  <g fill="none" stroke-width="1.6" stroke-linecap="round">${grass}</g>
+  <rect class="night" x="-400" y="-300" width="1200" height="900" fill="#0a1632" opacity=".2"/>`;
+}
+
+let lastDay=-1;
+function render(){
+  const d=days(), D=Math.floor(d);
+  $('days').innerHTML=`${D}<small>jour${D>1?'s':''}</small>`;
+  const rem=(d-D)*24; $('clock').textContent=`et ${Math.floor(rem)} h ${String(Math.floor((rem%1)*60)).padStart(2,'0')} min sans porno`;
+  if(D>st.best){st.best=D;save()}
+  $('best').textContent=st.best; $('wins').textContent=st.wins;
+  const x=xp(); let li=0; LEVELS.forEach((l,i)=>{if(x>=l[0])li=i});
+  const cur=LEVELS[li][0], nxt=LEVELS[li+1]?LEVELS[li+1][0]:cur+10000;
+  $('lvl').textContent=`Niveau ${li+1} · ${LEVELS[li][1]}`;
+  $('bar').style.width=Math.min(100,(x-cur)/(nxt-cur)*100)+'%';
+  $('xpnote').textContent=`${x} XP · encore ${nxt-x} XP pour le niveau suivant`;
+  if(D!==lastDay){drawTree(D);lastDay=D}
+  const done=st.done[today()]||[], CH=todayCH();
+  const q=QUOTES[dayNum()%QUOTES.length];$('quote').textContent='« '+q[1]+' »';$('qauth').textContent='— '+q[0];
+  $('chal').innerHTML=CH.map(([id,l])=>`<button class="ch${done.includes(id)?' on':''}" data-c="${id}"><span class="box">${done.includes(id)?'✓':''}</span><span class="lb">${l}</span><em>+10</em></button>`).join('');
+  const mx={mx:Math.max(st.best,D)};
+  $('badges').innerHTML=BADGES.map(([ic,l,t])=>`<span class="bd${t(mx)?' on':''}" title="${l}"><i>${ic}</i>${l}</span>`).join('');
+  $('trig').innerHTML=st.triggers.length?`<p class="note" style="margin:12px 0 0">Derniers déclencheurs notés — repère ce qui revient :</p><ul class="log">${st.triggers.slice(-5).reverse().map(t=>`<li>${t.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}</li>`).join('')}</ul>`:'';
+}
+
+let ti=Math.floor(Math.random()*TRUTHS.length);
+const showTruth=()=>{$('truth').textContent=TRUTHS[ti%TRUTHS.length];ti++};
+$('nextTruth').onclick=showTruth;
+
+$('chal').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;
+  const k=today(),arr=st.done[k]||(st.done[k]=[]),id=b.dataset.c;
+  if(arr.includes(id))return;
+  arr.push(id);st.bonus+=10;st.chTotal++;
+  for(const key in st.done) if(key!==k) delete st.done[key];
+  save();render();toast(arr.length===6?'Tous les défis du jour ! Énorme.':'+10 XP, bien joué');});
+
+$('reasons').value=st.reasons;
+$('reasons').addEventListener('input',e=>{st.reasons=e.target.value;save();render()});
+
+let sosT, msgT, left;
+function sosMsgs(){const r=st.reasons.split(/\n|\.|;/).map(s=>s.trim()).filter(s=>s.length>3).map(s=>'Tu as écrit : « '+s+' »');return r.concat(TRUTHS)}
+$('sosBtn').onclick=()=>{
+  $('sosOv').classList.add('show');left=90;$('timer').textContent=left;
+  const m=sosMsgs();let i=0;$('sosMsg').textContent=m[0];
+  clearInterval(sosT);clearInterval(msgT);
+  sosT=setInterval(()=>{left--;$('timer').textContent=left>0?left:'✓';
+    $('blab').textContent=left<=0?"Tu l'as fait. La vague est passée.":(Math.floor((90-left)/4)%2?'Expire lentement…':'Inspire…');
+    if(left<=0)clearInterval(sosT)},1000);
+  msgT=setInterval(()=>{i++;$('sosMsg').textContent=m[i%m.length]},7000);
+};
+const closeSos=()=>{$('sosOv').classList.remove('show');clearInterval(sosT);clearInterval(msgT)};
+$('closeSos').onclick=closeSos;
+$('won').onclick=()=>{st.wins++;st.bonus+=30;save();closeSos();render();toast(`Envie vaincue n°${st.wins} · +30 XP`)};
+
+$('relapseBtn').onclick=()=>{$('trigTxt').value='';$('relOv').classList.add('show')};
+$('relNo').onclick=()=>$('relOv').classList.remove('show');
+$('relOk').onclick=()=>{const t=$('trigTxt').value.trim();
+  st.bank+=Math.floor(days())*50;st.start=Date.now();
+  if(t){st.triggers.push(t.slice(0,140));st.triggers=st.triggers.slice(-20)}
+  save();lastDay=-1;$('relOv').classList.remove('show');render();toast('Nouvelle série lancée. Tu gardes tout ton XP.')};
+
+$('copySave').onclick=async()=>{const code=btoa(unescape(encodeURIComponent(JSON.stringify(st))));
+  try{await navigator.clipboard.writeText(code);toast('Sauvegarde copiée — colle-la sur ton autre appareil')}
+  catch(e){$('impTxt').value=code;$('impOv').classList.add('show');toast('Copie ce code à la main')}};
+$('openImport').onclick=()=>{$('impTxt').value='';$('impOv').classList.add('show')};
+$('impNo').onclick=()=>$('impOv').classList.remove('show');
+$('impOk').onclick=()=>{try{const o=JSON.parse(decodeURIComponent(escape(atob($('impTxt').value.trim()))));
+  if(typeof o.start!=='number')throw 0;st=Object.assign(fresh(),o);save();$('reasons').value=st.reasons;lastDay=-1;render();
+  $('impOv').classList.remove('show');toast('Progression importée')}catch(e){toast("Code invalide, vérifie ce que tu as collé")}};
+
+const THEMES=[["auto","Auto",'<circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/>'],["dark","Sombre",'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="currentColor"/>'],["light","Clair",'<circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></g>']];
+let th='auto';try{th=localStorage.getItem('racines-theme')||'auto'}catch(e){}
+const applyTheme=()=>{const r=document.documentElement;if(th==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',th);
+  const x=THEMES.find(z=>z[0]===th)||THEMES[0];$('themeBtn').innerHTML=`<svg viewBox="0 0 24 24">${x[2]}</svg>${x[1]}`};
+$('themeBtn').onclick=()=>{const i=THEMES.findIndex(z=>z[0]===th);th=THEMES[(i+1)%3][0];try{localStorage.setItem('racines-theme',th)}catch(e){}applyTheme()};
+applyTheme();
+showTruth();render();setInterval(render,30000);
+}
+</script>
+<script>if('serviceWorker' in navigator){addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}</script>
+</body>
+</html>
