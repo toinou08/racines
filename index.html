@@ -139,6 +139,10 @@ textarea{width:100%;font:16px/1.5 Nunito,sans-serif;border-radius:16px;border:1p
 .toast{position:fixed;left:50%;bottom:calc(var(--navh) + 30px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(200px);background:var(--g);color:#fff;font-weight:800;padding:12px 20px;border-radius:40px;transition:transform .35s;z-index:10;max-width:90vw;text-align:center}
 .toast.show{transform:translateX(-50%) translateY(0)}
 ul.log{margin:6px 0 0;padding-left:20px;color:var(--mute)}
+/* rappel du soir */
+.rtime{font:900 28px Nunito,sans-serif;color:var(--g);background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:6px 12px;width:auto}
+.rbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-weight:800;min-height:48px;border-radius:14px;padding:10px 16px;flex:1 1 200px}
+.rbtn.pri{background:var(--g);color:#fff}.rbtn.sec{border:2px solid var(--line);color:var(--ink)}
 /* confidentialité */
 .swr{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid var(--line)}
 .swr b{display:block}.swr span{display:block;font-size:14px;color:var(--mute);font-weight:600}
@@ -216,6 +220,11 @@ ul.log{margin:6px 0 0;padding-left:20px;color:var(--mute)}
     <div class="card"><h2>Téléphone ↔ PC</h2>
       <p class="note" style="margin-top:0">Chaque appareil garde sa propre progression. Pour la transférer : copie ta sauvegarde ici, colle-la sur l'autre appareil.</p>
       <div class="row"><button class="ghost" id="copySave">Copier ma sauvegarde</button><button class="ghost" id="openImport">Importer</button></div></div>
+    <div class="card" id="remCard"><h2>Rappel du soir 🌙</h2>
+      <p class="note" style="margin-top:-4px">Un petit rappel chaque soir pour faire le point, cocher tes défis et poser le téléphone. Il s'ajoute à l'agenda de ton téléphone, donc il sonne même quand Racines est fermée.</p>
+      <div class="setrow" style="margin:6px 0 14px"><b>Heure</b><input type="time" class="rtime" id="remTime" value="21:00" aria-label="Heure du rappel"></div>
+      <div class="row"><a class="rbtn pri" id="remG" target="_blank" rel="noopener">Ajouter à Google Agenda</a><a class="rbtn sec" id="remIcs" download="racines-rappel.ics">Autre agenda</a></div>
+      <p class="note" style="margin-bottom:0">Le rappel est discret : il s'appelle juste «&nbsp;Racines&nbsp;». Pour le supprimer ou changer l'heure plus tard, fais-le dans ton agenda.</p></div>
     <div class="card" id="privCard"><h2>Confidentialité</h2>
       <p class="note" style="margin-top:-4px">Tout reste sur cet appareil : pas de compte, rien n'est envoyé.</p>
       <div class="swr"><div><b>Code de verrouillage</b><span>Demande un code à 4 chiffres pour ouvrir l'appli.</span></div><button class="sw" id="swPin" role="switch" aria-checked="false" aria-label="Code de verrouillage"><i></i></button></div>
@@ -470,6 +479,27 @@ const go=v=>{document.querySelectorAll('.view').forEach(e=>e.classList.toggle('o
 tabs.forEach(t=>t.onclick=()=>go(t.dataset.v));
 applyTheme();
 showTruth();render();setInterval(render,30000);
+
+// ---- rappel du soir (via l'agenda du téléphone) ----
+const remTitle='🌱 Racines',remTxt="Petit point du soir : ouvre Racines, coche tes défis, et pose le téléphone hors de la chambre.";
+function remLinks(){
+  const t=$('remTime').value||'21:00',[h,m]=t.split(':').map(Number);
+  const d=new Date();if(d.getHours()*60+d.getMinutes()>=h*60+m)d.setDate(d.getDate()+1);
+  const p=n=>String(n).padStart(2,'0'),ymd=`${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}`;
+  const a=`${ymd}T${p(h)}${p(m)}00`,e=new Date(d.getFullYear(),d.getMonth(),d.getDate(),h,m+10),b=`${e.getFullYear()}${p(e.getMonth()+1)}${p(e.getDate())}T${p(e.getHours())}${p(e.getMinutes())}00`;
+  const url=location.href.split('#')[0].split('?')[0];
+  let tz='Europe/Paris';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||tz}catch(_){}
+  $('remG').href='https://calendar.google.com/calendar/render?'+new URLSearchParams({action:'TEMPLATE',text:remTitle,details:remTxt+'\n'+url,dates:a+'/'+b,ctz:tz,recur:'RRULE:FREQ=DAILY'});
+  const now=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Racines//FR','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:racines-rappel-'+Date.now()+'@racines','DTSTAMP:'+now,'DTSTART:'+a,'DTEND:'+b,'RRULE:FREQ=DAILY','SUMMARY:'+remTitle,'DESCRIPTION:'+remTxt.replace(/,/g,'\\,')+'\\n'+url,'URL:'+url,'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+remTitle,'TRIGGER:PT0M','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+  $('remIcs').href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
+}
+try{$('remTime').value=st.remind||'21:00'}catch(_){}
+$('remTime').addEventListener('change',()=>{st.remind=$('remTime').value;save();remLinks()});
+$('remG').addEventListener('click',()=>{remLinks();st.remind=$('remTime').value;save();setTimeout(()=>toast('Enregistre l\'événement dans ton agenda'),400)});
+$('remIcs').addEventListener('click',()=>{remLinks();st.remind=$('remTime').value;save();setTimeout(()=>toast('Ouvre le fichier pour l\'ajouter à ton agenda'),400)});
+remLinks();
+
 
 // ---- questionnaire de départ ----
 const MOT=[["energie","⚡","Retrouver de l'énergie"],["couple","❤️","Mon couple, mes relations"],["temps","⏳","Arrêter de perdre mon temps"],["confiance","💪","Reprendre confiance en moi"],["focus","🎯","Mieux me concentrer"],["famille","👨‍👧","Être plus présent pour ma famille"],["libre","🕊️","Ne plus être esclave d'une habitude"]];
