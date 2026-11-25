@@ -499,6 +499,8 @@ $('remTime').addEventListener('change',()=>{st.remind=$('remTime').value;save();
 $('remG').addEventListener('click',()=>{remLinks();st.remind=$('remTime').value;save();setTimeout(()=>toast('Enregistre l\'événement dans ton agenda'),400)});
 $('remIcs').addEventListener('click',()=>{remLinks();st.remind=$('remTime').value;save();setTimeout(()=>toast('Ouvre le fichier pour l\'ajouter à ton agenda'),400)});
 remLinks();
+// raccourci « SOS » (appui long sur l'icône)
+if(new URLSearchParams(location.search).has('sos')){$('sosBtn').click();history.replaceState(null,'',location.pathname)}
 
 
 // ---- questionnaire de départ ----

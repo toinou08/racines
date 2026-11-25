@@ -1,0 +1,5 @@
+# Clé de signature Android : ne jamais publier
+*.keystore
+*.jks
+signing-key-info.txt
+*.zip
