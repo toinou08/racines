@@ -1,5 +1,5 @@
 // Racines — met l'appli en cache pour qu'elle marche sans internet
-const CACHE = 'racines-v2';
+const CACHE = 'racines-v3';
 const FILES = ['./', 'index.html', 'privacy.html', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png', 'icons/apple-touch-icon.png'];
 

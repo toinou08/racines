@@ -139,6 +139,23 @@ textarea{width:100%;font:16px/1.5 Nunito,sans-serif;border-radius:16px;border:1p
 .toast{position:fixed;left:50%;bottom:calc(var(--navh) + 30px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(200px);background:var(--g);color:#fff;font-weight:800;padding:12px 20px;border-radius:40px;transition:transform .35s;z-index:10;max-width:90vw;text-align:center}
 .toast.show{transform:translateX(-50%) translateY(0)}
 ul.log{margin:6px 0 0;padding-left:20px;color:var(--mute)}
+/* confidentialité */
+.swr{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid var(--line)}
+.swr b{display:block}.swr span{display:block;font-size:14px;color:var(--mute);font-weight:600}
+.sw{flex:none;width:56px;height:44px;min-height:44px;padding:6px 0;background:transparent;position:relative}
+.sw::before{content:"";position:absolute;inset:6px 0;border-radius:20px;background:var(--line);transition:background .2s}
+.sw i{position:absolute;top:9px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.sw[aria-checked=true]::before{background:var(--g)}.sw[aria-checked=true] i{left:27px}
+.danger{color:#c0392b;border-color:#e8b4ad}
+.lock{position:fixed;inset:0;z-index:40;background:var(--bg);display:none;place-items:center;padding:calc(20px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom))}.lock.show{display:grid}
+.pad{text-align:center;width:100%;max-width:300px}
+.pad .logo{width:56px;height:56px;margin:0 auto 10px;display:block}
+.dots{display:flex;justify-content:center;gap:16px;margin:14px 0 4px}.dots i{width:16px;height:16px;border-radius:50%;border:2px solid var(--g)}.dots i.on{background:var(--g)}
+.keys{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:8px}
+.keys button{height:68px;width:68px;font-size:26px;border-radius:50%;background:var(--card);box-shadow:var(--shadow);justify-self:center}
+.shake{animation:sh .35s}@keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.veil{position:fixed;inset:0;z-index:35;background:var(--bg);display:none}.veil.show{display:block}
+.ov.top{z-index:50}
 @media(min-width:760px){.tabs{left:50%;right:auto;transform:translateX(-50%);width:520px;bottom:14px;border:1px solid var(--line);border-radius:26px;padding-bottom:6px}}
 </style>
 </head>
@@ -199,6 +216,14 @@ ul.log{margin:6px 0 0;padding-left:20px;color:var(--mute)}
     <div class="card"><h2>Téléphone ↔ PC</h2>
       <p class="note" style="margin-top:0">Chaque appareil garde sa propre progression. Pour la transférer : copie ta sauvegarde ici, colle-la sur l'autre appareil.</p>
       <div class="row"><button class="ghost" id="copySave">Copier ma sauvegarde</button><button class="ghost" id="openImport">Importer</button></div></div>
+    <div class="card" id="privCard"><h2>Confidentialité</h2>
+      <p class="note" style="margin-top:-4px">Tout reste sur cet appareil : pas de compte, rien n'est envoyé.</p>
+      <div class="swr"><div><b>Code de verrouillage</b><span>Demande un code à 4 chiffres pour ouvrir l'appli.</span></div><button class="sw" id="swPin" role="switch" aria-checked="false" aria-label="Code de verrouillage"><i></i></button></div>
+      <div class="swr"><div><b>Mode discret</b><span>Remplace les mots explicites par des termes neutres, au cas où quelqu'un voit ton écran.</span></div><button class="sw" id="swDisc" role="switch" aria-checked="false" aria-label="Mode discret"><i></i></button></div>
+      <div class="swr"><div><b>Flouter quand je quitte l'appli</b><span>Cache le contenu quand tu passes à une autre appli.</span></div><button class="sw" id="swBlur" role="switch" aria-checked="false" aria-label="Flouter quand je quitte l'appli"><i></i></button></div>
+      <div class="swr"><div><b>Garder mes notes</b><span>Enregistre tes raisons et tes déclencheurs. Désactivé : ils sont effacés et plus rien n'est noté.</span></div><button class="sw" id="swNotes" role="switch" aria-checked="true" aria-label="Garder mes notes"><i></i></button></div>
+      <div class="row" style="margin-top:10px"><button class="ghost danger" id="wipeBtn">Tout effacer</button></div>
+    </div>
     <div class="card setrow"><b>Questionnaire de départ</b><button class="ghost" id="redoOnb">Refaire</button></div>
     <div class="card setrow"><b>Thème</b><div class="seg" id="seg"><button data-t="auto">Auto</button><button data-t="light">Clair</button><button data-t="dark">Sombre</button></div></div>
     <p class="note" style="text-align:center;margin-top:24px"><a href="privacy.html" style="color:inherit">Confidentialité</a> · Tes données restent sur ton appareil.</p>
@@ -240,6 +265,20 @@ ul.log{margin:6px 0 0;padding-left:20px;color:var(--mute)}
   <div class="obody" id="oBody"></div>
   <button class="ogo" id="oGo">Continuer</button>
 </div>
+<div class="lock" id="lock" role="dialog" aria-modal="true" aria-label="Code de verrouillage"><div class="pad">
+  <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="var(--g)"/><path d="M16 25v-9" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M16 17c-5 0-7-3-7-7 4 0 7 2 7 7zM16 15c0-5 3-8 8-8 0 5-3 8-8 8z" fill="#fff"/></svg>
+  <h2 id="padTitle" style="justify-content:center">Entre ton code</h2>
+  <div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+  <p class="note" id="padMsg">&nbsp;</p>
+  <div class="keys" id="keys"></div>
+  <div class="row" style="justify-content:center;margin-top:12px"><button class="ghost" id="padCancel">Annuler</button><button class="ghost" id="padForgot">Code oublié ?</button></div>
+</div></div>
+<div class="veil" id="veil"></div>
+<div class="ov top" id="wipeOv"><div class="panel card" style="text-align:left">
+  <h2 id="wipeTitle">Tout effacer ?</h2>
+  <p id="wipeTxt">Ta série, ton XP, tes badges, tes notes et ton code seront supprimés de cet appareil. C'est définitif.</p>
+  <div class="row" style="margin-top:12px"><button id="wipeOk" style="background:#c0392b;color:#fff">Tout effacer</button><button class="ghost" id="wipeNo">Annuler</button></div>
+</div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -249,6 +288,10 @@ const fresh=()=>({start:Date.now(),bank:0,bonus:0,wins:0,best:0,chTotal:0,done:{
 let st;const hadData=(()=>{try{return !!localStorage.getItem(KEY)}catch(e){return false}})();
 try{st=Object.assign(fresh(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){st=fresh()}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+const PRIV0={pin:null,disc:false,blur:false,notes:true};
+st.priv=Object.assign({},PRIV0,st.priv||{});
+const DSC=s=>!st.priv.disc?s:s.replace(/sans porno/g,'sans craquer').replace(/Le porno/g,'Cette habitude').replace(/le porno/g,'cette habitude').replace(/porno/gi,'habitude');
+const H=s=>{let h=5381;for(const c of 'racines:'+s)h=((h*33)^c.charCodeAt(0))>>>0;return h.toString(36)};
 
 const TRUTHS=[
 "Une envie, c'est une vague : elle monte, elle culmine, puis elle redescend. Tu n'as rien à faire à part attendre.",
@@ -346,7 +389,9 @@ function render(){
   const MS=[1,3,7,14,30,60,90,180,365,730];const nm=MS.find(m=>m>D)||D+365, pm=[0,...MS].filter(m=>m<=D).pop()||0;
   const gl=st.goal&&D<st.goal?st.goal:0;$('nextm').textContent=gl?(gl-D)+' j':nm+' j';$('nextlab').textContent=gl?'avant ton objectif':'prochain palier';
   $('hello').hidden=!st.name;$('hello').textContent=st.name?`Salut ${st.name} 👋`:'';$('ring').setAttribute('stroke-dasharray',`${Math.max(2,(d-pm)/(nm-pm)*100).toFixed(1)} 100`);
-  const rem=(d-D)*24; $('clock').textContent=`et ${Math.floor(rem)} h ${String(Math.floor((rem%1)*60)).padStart(2,'0')} min sans porno`;
+  const rem=(d-D)*24; $('clock').textContent=`et ${Math.floor(rem)} h ${String(Math.floor((rem%1)*60)).padStart(2,'0')} min sans porno`;$('clock').textContent=DSC($('clock').textContent);document.title=st.priv.disc?'Racines':'Racines — libre';
+  for(const [id,k] of [['swPin',!!st.priv.pin],['swDisc',st.priv.disc],['swBlur',st.priv.blur],['swNotes',st.priv.notes]])$(id).setAttribute('aria-checked',k);
+  $('reasons').disabled=!st.priv.notes;$('reasons').placeholder=st.priv.notes?"Ex : je veux retrouver de l'énergie, être plus présent avec ma famille, arrêter de perdre mes soirées…":'Notes désactivées dans Confidentialité';$('trigTxt').style.display=st.priv.notes?'':'none';
   if(D>st.best){st.best=D;save()}
   $('best').textContent=st.best; $('wins').textContent=st.wins;
   const x=xp(); let li=0; LEVELS.forEach((l,i)=>{if(x>=l[0])li=i});
@@ -368,7 +413,7 @@ function render(){
 }
 
 let ti=Math.floor(Math.random()*TRUTHS.length);
-const showTruth=()=>{$('truth').textContent=TRUTHS[ti%TRUTHS.length];ti++};
+const showTruth=()=>{$('truth').textContent=DSC(TRUTHS[ti%TRUTHS.length]);ti++};
 $('nextTruth').onclick=showTruth;
 
 $('chal').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;
@@ -379,19 +424,19 @@ $('chal').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!
   save();render();toast(arr.length===6?'Tous les défis du jour ! Énorme.':'+10 XP, bien joué');});
 
 $('reasons').value=st.reasons;
-$('reasons').addEventListener('input',e=>{st.reasons=e.target.value;save();render()});
+$('reasons').addEventListener('input',e=>{if(!st.priv.notes)return;st.reasons=e.target.value;save();render()});
 
 let sosT, msgT, left;
 const TIPS={soir:"Il est tard : mets le téléphone à charger hors de la chambre et va te coucher.",matin:"Au réveil, sors du lit tout de suite : douche, café, lumière.",ennui:"Tu t'ennuies : choisis un défi du jour et fais-le maintenant.",stress:"Le stress cherche une sortie : 20 pompes ou une marche rapide feront mieux.",seul:"Tu es seul : envoie un message à quelqu'un, ou sors dans un lieu public.",reseaux:"Ferme les réseaux. C'est souvent là que tout commence."};
 function sosMsgs(){const tp=(st.when||[]).map(k=>TIPS[k]).filter(Boolean);const r=st.reasons.split(/\n|\.|;/).map(s=>s.trim()).filter(s=>s.length>3).map(s=>'Tu as écrit : « '+s+' »');return tp.concat(r,TRUTHS)}
 $('sosBtn').onclick=()=>{
   $('sosOv').classList.add('show');left=90;$('timer').textContent=left;
-  const m=sosMsgs();let i=0;$('sosMsg').textContent=m[0];
+  const m=sosMsgs();let i=0;$('sosMsg').textContent=DSC(m[0]);
   clearInterval(sosT);clearInterval(msgT);
   sosT=setInterval(()=>{left--;$('timer').textContent=left>0?left:'✓';
     $('blab').textContent=left<=0?"Tu l'as fait. La vague est passée.":(Math.floor((90-left)/4)%2?'Expire lentement…':'Inspire…');
     if(left<=0)clearInterval(sosT)},1000);
-  msgT=setInterval(()=>{i++;$('sosMsg').textContent=m[i%m.length]},7000);
+  msgT=setInterval(()=>{i++;$('sosMsg').textContent=DSC(m[i%m.length])},7000);
 };
 const closeSos=()=>{$('sosOv').classList.remove('show');clearInterval(sosT);clearInterval(msgT)};
 $('closeSos').onclick=closeSos;
@@ -401,16 +446,16 @@ $('relapseBtn').onclick=()=>{$('trigTxt').value='';$('relOv').classList.add('sho
 $('relNo').onclick=()=>$('relOv').classList.remove('show');
 $('relOk').onclick=()=>{const t=$('trigTxt').value.trim();
   st.bank+=Math.floor(days())*50;st.start=Date.now();
-  if(t){st.triggers.push(t.slice(0,140));st.triggers=st.triggers.slice(-20)}
+  if(t&&st.priv.notes){st.triggers.push(t.slice(0,140));st.triggers=st.triggers.slice(-20)}
   save();lastDay=-1;$('relOv').classList.remove('show');render();toast('Nouvelle série lancée. Tu gardes tout ton XP.')};
 
-$('copySave').onclick=async()=>{const code=btoa(unescape(encodeURIComponent(JSON.stringify(st))));
+$('copySave').onclick=async()=>{const code=btoa(unescape(encodeURIComponent(JSON.stringify(Object.assign({},st,{priv:Object.assign({},st.priv,{pin:null})})))));
   try{await navigator.clipboard.writeText(code);toast('Sauvegarde copiée — colle-la sur ton autre appareil')}
   catch(e){$('impTxt').value=code;$('impOv').classList.add('show');toast('Copie ce code à la main')}};
 $('openImport').onclick=()=>{$('impTxt').value='';$('impOv').classList.add('show')};
 $('impNo').onclick=()=>$('impOv').classList.remove('show');
 $('impOk').onclick=()=>{try{const o=JSON.parse(decodeURIComponent(escape(atob($('impTxt').value.trim()))));
-  if(typeof o.start!=='number')throw 0;st=Object.assign(fresh(),o);save();$('reasons').value=st.reasons;lastDay=-1;render();
+  if(typeof o.start!=='number')throw 0;const keep=st.priv;st=Object.assign(fresh(),o);st.priv=keep;save();$('reasons').value=st.reasons;lastDay=-1;render();
   $('impOv').classList.remove('show');toast('Progression importée')}catch(e){toast("Code invalide, vérifie ce que tu as collé")}};
 
 const THEMES=[["auto","Auto",'<circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/>'],["dark","Sombre",'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="currentColor"/>'],["light","Clair",'<circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></g>']];
@@ -463,11 +508,49 @@ $('oSkip').onclick=()=>{os=steps.length-1;if(ob.goal==null)ob.goal=30;oDraw()};
 function oFinish(){
  st.name=ob.name||'';st.motives=ob.motives;st.when=ob.when;st.goal=ob.goal||30;st.onboarded=1;
  if(!hadData&&ob.since!=null&&!st.onbStartSet){st.start=Date.now()-ob.since*DAY;st.onbStartSet=1}
- if(!st.reasons.trim()&&ob.motives.length){st.reasons=ob.motives.map(k=>MOT.find(m=>m[0]===k)[2]).join('.\n')+'.';$('reasons').value=st.reasons}
+ if(st.priv.notes&&!st.reasons.trim()&&ob.motives.length){st.reasons=ob.motives.map(k=>MOT.find(m=>m[0]===k)[2]).join('.\n')+'.';$('reasons').value=st.reasons}
  save();lastDay=-1;render();$('onb').classList.remove('show');toast(st.name?`Bonne route, ${st.name} !`:'Bonne route !')}
 function openOnb(){ob={name:st.name||'',motives:[...(st.motives||[])],when:[...(st.when||[])],since:null,goal:st.goal||null};os=0;buildSteps();oDraw();$('onb').classList.add('show')}
 $('redoOnb').onclick=openOnb;
 if(!st.onboarded)openOnb();
+
+// ---- confidentialité ----
+let pMode=null,pBuf='',pFirst='';
+const KEYS=['1','2','3','4','5','6','7','8','9','','0','⌫'];
+$('keys').innerHTML=KEYS.map(k=>k?`<button data-k="${k}" aria-label="${k==='⌫'?'Effacer':k}">${k}</button>`:'<span></span>').join('');
+const dots=()=>{[...$('dots').children].forEach((d,i)=>d.classList.toggle('on',i<pBuf.length))};
+const TITLES={unlock:'Entre ton code',set:'Choisis un code à 4 chiffres',confirm:'Confirme ton code',off:'Entre ton code pour le désactiver'};
+function showPad(m,msg){pMode=m;pBuf='';$('padTitle').textContent=TITLES[m];$('padMsg').textContent=msg||'\u00a0';
+  $('padCancel').style.display=m==='unlock'?'none':'';$('padForgot').style.display=m==='unlock'?'':'none';dots();$('lock').classList.add('show')}
+const hidePad=()=>{$('lock').classList.remove('show');pMode=null};
+const fail=msg=>{$('padMsg').textContent=msg;const d=$('dots');d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');pBuf='';dots()};
+function padKey(k){if(!pMode)return;
+  if(k==='⌫'){pBuf=pBuf.slice(0,-1);dots();return}
+  if(pBuf.length>=4)return;pBuf+=k;dots();if(pBuf.length<4)return;
+  setTimeout(()=>{
+    if(pMode==='unlock'){if(H(pBuf)===st.priv.pin)hidePad();else fail('Code incorrect')}
+    else if(pMode==='set'){pFirst=pBuf;showPad('confirm')}
+    else if(pMode==='confirm'){if(pBuf===pFirst){st.priv.pin=H(pBuf);save();hidePad();render();toast('Code activé')}else showPad('set','Les deux codes ne correspondent pas')}
+    else if(pMode==='off'){if(H(pBuf)===st.priv.pin){st.priv.pin=null;save();hidePad();render();toast('Code désactivé')}else fail('Code incorrect')}
+  },120)}
+$('keys').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b)padKey(b.dataset.k)});
+addEventListener('keydown',e=>{if(!pMode)return;if(/^[0-9]$/.test(e.key))padKey(e.key);else if(e.key==='Backspace')padKey('⌫')});
+$('padCancel').onclick=hidePad;
+const openWipe=(title,txt)=>{$('wipeTitle').textContent=title;$('wipeTxt').textContent=txt;$('wipeOv').classList.add('show')};
+$('padForgot').onclick=()=>openWipe('Code oublié ?',"Pour ta confidentialité, le code ne peut pas être récupéré. La seule solution est de tout effacer sur cet appareil : ta série, ton XP, tes badges et tes notes. Si tu as gardé un code de sauvegarde, tu pourras l'importer ensuite.");
+$('swPin').onclick=()=>showPad(st.priv.pin?'off':'set');
+$('swDisc').onclick=()=>{st.priv.disc=!st.priv.disc;save();render();ti--;showTruth();toast(st.priv.disc?'Mode discret activé':'Mode discret désactivé')};
+$('swBlur').onclick=()=>{st.priv.blur=!st.priv.blur;save();render()};
+$('swNotes').onclick=()=>{st.priv.notes=!st.priv.notes;if(!st.priv.notes){st.reasons='';st.triggers=[];$('reasons').value='';toast('Notes effacées. Plus rien ne sera noté.')}save();render()};
+$('wipeBtn').onclick=()=>openWipe('Tout effacer ?',"Ta série, ton XP, tes badges, tes notes et ton code seront supprimés de cet appareil. C'est définitif.");
+$('wipeNo').onclick=()=>$('wipeOv').classList.remove('show');
+$('wipeOk').onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}st=fresh();st.priv=Object.assign({},PRIV0);save();$('reasons').value='';lastDay=-1;
+  $('wipeOv').classList.remove('show');hidePad();render();showTruth();go('home');toast('Tout a été effacé');openOnb()};
+let hiddenAt=0;
+const cover=on=>{if(st.priv.blur||!on)$('veil').classList.toggle('show',on)};
+document.addEventListener('visibilitychange',()=>{if(document.hidden){hiddenAt=Date.now();cover(true)}else{cover(false);if(st.priv.pin&&Date.now()-hiddenAt>60000&&!pMode)showPad('unlock')}});
+addEventListener('blur',()=>cover(true));addEventListener('focus',()=>cover(false));
+if(st.priv.pin)showPad('unlock');
 
 }
 </script>
