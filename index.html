@@ -102,6 +102,31 @@ textarea{width:100%;font:16px/1.5 Nunito,sans-serif;border-radius:16px;border:1p
 .sostab span.b{width:66px;height:66px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-size:18px;font-weight:900;box-shadow:0 5px 0 #c94a2e,0 8px 20px rgba(255,107,74,.35);border:4px solid var(--bg);animation:pulse 3s ease-in-out infinite}
 .sostab:active span.b{transform:translateY(3px);box-shadow:0 2px 0 #c94a2e}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+/* questionnaire */
+.onb{position:fixed;inset:0;z-index:20;background:var(--bg);display:none;flex-direction:column;padding:calc(14px + env(safe-area-inset-top)) max(5vw,20px) calc(18px + env(safe-area-inset-bottom))}
+.onb.show{display:flex}
+.otop{display:flex;align-items:center;gap:12px;max-width:520px;width:100%;margin:0 auto}
+.oback{width:44px;height:44px;padding:0;border-radius:50%;background:var(--card);box-shadow:var(--shadow);display:grid;place-items:center}
+.oback[hidden]{visibility:hidden;display:grid}
+.obar{flex:1;height:8px;border-radius:9px;background:var(--line);overflow:hidden}.obar i{display:block;height:100%;background:var(--g);transition:width .4s}
+.oskip{background:none;color:var(--mute);font-size:14px;padding:6px}
+.obody{flex:1;overflow:auto;max-width:520px;width:100%;margin:0 auto;padding:26px 0 12px;animation:in .35s ease}
+.oq{font-size:clamp(26px,7vw,32px);font-weight:900;line-height:1.15;margin:0 0 8px;text-wrap:balance}
+.osub{color:var(--mute);margin:0 0 22px;font-weight:600}
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:14px;text-align:left;background:var(--card);box-shadow:var(--shadow);border:2px solid transparent;padding:14px 16px;border-radius:18px;font-size:17px;min-height:60px}
+.opt .em{font-size:24px;width:32px;text-align:center;flex:none}
+.opt .ck{margin-left:auto;width:24px;height:24px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;color:#fff;font-size:14px}
+.opt[aria-pressed=true]{border-color:var(--g);background:color-mix(in srgb,var(--g) 9%,var(--card))}
+.opt[aria-pressed=true] .ck{background:var(--g);border-color:var(--g)}
+.oin{width:100%;font:700 20px Nunito,sans-serif;padding:16px;border-radius:18px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.oin:focus{outline:none;border-color:var(--g)}
+.ogo{max-width:520px;width:100%;margin:0 auto;background:var(--g);color:#fff;font-size:18px;min-height:58px;border-radius:18px;box-shadow:0 4px 0 color-mix(in srgb,var(--g) 70%,#000)}
+.ogo:disabled{opacity:.4;box-shadow:none}
+.hero-ill{width:min(260px,70vw);margin:10px auto 18px;display:block}
+.center{text-align:center}
+.hello{font-weight:900;font-size:20px;margin:2px 0 10px}
 /* surcouches */
 .ov{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(6px);display:none;place-items:center;padding:20px;z-index:9;overflow:auto}
 .ov.show{display:grid}.panel{max-width:520px;width:100%;text-align:center}
@@ -126,6 +151,7 @@ ul.log{margin:6px 0 0;padding-left:20px;color:var(--mute)}
 <main class="wrap">
   <!-- ACCUEIL -->
   <section class="view on" id="v-home" aria-label="Accueil">
+    <p class="hello" id="hello" hidden></p>
     <div class="tree"><svg id="tree" viewBox="0 0 400 320" preserveAspectRatio="xMidYMax slice" aria-label="Ton arbre"></svg><div class="lvchip" id="lvchip">Graine</div></div>
     <div class="stat">
       <div class="counter">
@@ -141,7 +167,7 @@ ul.log{margin:6px 0 0;padding-left:20px;color:var(--mute)}
       <div class="kvs">
         <div class="kv"><b id="wins">0</b><span>envies vaincues</span></div>
         <div class="kv"><b id="best">0</b><span>record (jours)</span></div>
-        <div class="kv"><b id="nextm">1</b><span>prochain palier</span></div>
+        <div class="kv"><b id="nextm">1</b><span id="nextlab">prochain palier</span></div>
       </div>
     </div>
     <div class="card"><p class="label">Pensée du jour</p><p class="qt" id="quote"></p><p class="qa" id="qauth"></p></div>
@@ -173,6 +199,7 @@ ul.log{margin:6px 0 0;padding-left:20px;color:var(--mute)}
     <div class="card"><h2>Téléphone ↔ PC</h2>
       <p class="note" style="margin-top:0">Chaque appareil garde sa propre progression. Pour la transférer : copie ta sauvegarde ici, colle-la sur l'autre appareil.</p>
       <div class="row"><button class="ghost" id="copySave">Copier ma sauvegarde</button><button class="ghost" id="openImport">Importer</button></div></div>
+    <div class="card setrow"><b>Questionnaire de départ</b><button class="ghost" id="redoOnb">Refaire</button></div>
     <div class="card setrow"><b>Thème</b><div class="seg" id="seg"><button data-t="auto">Auto</button><button data-t="light">Clair</button><button data-t="dark">Sombre</button></div></div>
     <p class="note" style="text-align:center;margin-top:24px"><a href="privacy.html" style="color:inherit">Confidentialité</a> · Tes données restent sur ton appareil.</p>
   </section>
@@ -208,13 +235,18 @@ ul.log{margin:6px 0 0;padding-left:20px;color:var(--mute)}
   <div class="row" style="margin-top:12px"><button id="impOk" style="background:var(--g);color:#fff">Importer</button><button class="ghost" id="impNo">Annuler</button></div>
 </div></div>
 
+<div class="onb" id="onb" role="dialog" aria-modal="true" aria-label="Questionnaire de départ">
+  <div class="otop"><button class="oback" id="oBack" aria-label="Retour"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="obar"><i id="oBar"></i></div><button class="oskip" id="oSkip">Passer</button></div>
+  <div class="obody" id="oBody"></div>
+  <button class="ogo" id="oGo">Continuer</button>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
 {
 const KEY='racines-v1', DAY=864e5, $=id=>document.getElementById(id);
 const fresh=()=>({start:Date.now(),bank:0,bonus:0,wins:0,best:0,chTotal:0,done:{},reasons:'',triggers:[]});
-let st;
+let st;const hadData=(()=>{try{return !!localStorage.getItem(KEY)}catch(e){return false}})();
 try{st=Object.assign(fresh(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){st=fresh()}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
 
@@ -312,7 +344,8 @@ function render(){
   const d=days(), D=Math.floor(d);
   $('days').textContent=D;$('dlab').textContent=D>1?'jours':'jour';
   const MS=[1,3,7,14,30,60,90,180,365,730];const nm=MS.find(m=>m>D)||D+365, pm=[0,...MS].filter(m=>m<=D).pop()||0;
-  $('nextm').textContent=nm+' j';$('ring').setAttribute('stroke-dasharray',`${Math.max(2,(d-pm)/(nm-pm)*100).toFixed(1)} 100`);
+  const gl=st.goal&&D<st.goal?st.goal:0;$('nextm').textContent=gl?(gl-D)+' j':nm+' j';$('nextlab').textContent=gl?'avant ton objectif':'prochain palier';
+  $('hello').hidden=!st.name;$('hello').textContent=st.name?`Salut ${st.name} 👋`:'';$('ring').setAttribute('stroke-dasharray',`${Math.max(2,(d-pm)/(nm-pm)*100).toFixed(1)} 100`);
   const rem=(d-D)*24; $('clock').textContent=`et ${Math.floor(rem)} h ${String(Math.floor((rem%1)*60)).padStart(2,'0')} min sans porno`;
   if(D>st.best){st.best=D;save()}
   $('best').textContent=st.best; $('wins').textContent=st.wins;
@@ -349,7 +382,8 @@ $('reasons').value=st.reasons;
 $('reasons').addEventListener('input',e=>{st.reasons=e.target.value;save();render()});
 
 let sosT, msgT, left;
-function sosMsgs(){const r=st.reasons.split(/\n|\.|;/).map(s=>s.trim()).filter(s=>s.length>3).map(s=>'Tu as écrit : « '+s+' »');return r.concat(TRUTHS)}
+const TIPS={soir:"Il est tard : mets le téléphone à charger hors de la chambre et va te coucher.",matin:"Au réveil, sors du lit tout de suite : douche, café, lumière.",ennui:"Tu t'ennuies : choisis un défi du jour et fais-le maintenant.",stress:"Le stress cherche une sortie : 20 pompes ou une marche rapide feront mieux.",seul:"Tu es seul : envoie un message à quelqu'un, ou sors dans un lieu public.",reseaux:"Ferme les réseaux. C'est souvent là que tout commence."};
+function sosMsgs(){const tp=(st.when||[]).map(k=>TIPS[k]).filter(Boolean);const r=st.reasons.split(/\n|\.|;/).map(s=>s.trim()).filter(s=>s.length>3).map(s=>'Tu as écrit : « '+s+' »');return tp.concat(r,TRUTHS)}
 $('sosBtn').onclick=()=>{
   $('sosOv').classList.add('show');left=90;$('timer').textContent=left;
   const m=sosMsgs();let i=0;$('sosMsg').textContent=m[0];
@@ -391,6 +425,50 @@ const go=v=>{document.querySelectorAll('.view').forEach(e=>e.classList.toggle('o
 tabs.forEach(t=>t.onclick=()=>go(t.dataset.v));
 applyTheme();
 showTruth();render();setInterval(render,30000);
+
+// ---- questionnaire de départ ----
+const MOT=[["energie","⚡","Retrouver de l'énergie"],["couple","❤️","Mon couple, mes relations"],["temps","⏳","Arrêter de perdre mon temps"],["confiance","💪","Reprendre confiance en moi"],["focus","🎯","Mieux me concentrer"],["famille","👨‍👧","Être plus présent pour ma famille"],["libre","🕊️","Ne plus être esclave d'une habitude"]];
+const WHEN=[["soir","🌙","Le soir, tard"],["matin","☀️","Au réveil"],["ennui","😐","Quand je m'ennuie"],["stress","😣","Quand je suis stressé"],["seul","🏠","Quand je suis seul"],["reseaux","📱","Après les réseaux sociaux"]];
+const SINCE=[[0,"🌱","Aujourd'hui, je commence maintenant"],[1,"📅","Hier"],[3,"📅","Il y a 2 ou 3 jours"],[7,"🗓️","Une semaine ou plus"]];
+const GOALS=[[7,"🌿","Une semaine"],[30,"🌳","Un mois"],[90,"🌲","90 jours, le grand reset"]];
+const tree='<svg class="hero-ill" viewBox="0 0 200 160"><ellipse cx="100" cy="146" rx="80" ry="12" fill="var(--line)"/><path d="M100 146V96" stroke="#6b4429" stroke-width="8" stroke-linecap="round"/><path d="M100 120l-16-12M100 110l14-10" stroke="#6b4429" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="70" r="40" fill="#4a8f3a"/><circle cx="72" cy="88" r="24" fill="#6fae4a"/><circle cx="128" cy="86" r="26" fill="#6fae4a"/><circle cx="104" cy="50" r="24" fill="#8cc659"/><circle cx="84" cy="66" r="4" fill="#ff6b4a"/><circle cx="122" cy="72" r="4" fill="#ff6b4a"/></svg>';
+let ob={}, os=0, steps=[];
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function buildSteps(){steps=[
+ {k:'intro',go:"C'est parti",ok:()=>1,html:()=>`${tree}<h1 class="oq center">Bienvenue dans Racines</h1><p class="osub center">5 petites questions pour adapter l'appli à toi. Moins d'une minute, et tout reste sur ton téléphone.</p>`},
+ {k:'name',ok:()=>1,html:()=>`<h1 class="oq">Comment on t'appelle ?</h1><p class="osub">Un prénom ou un pseudo. Facultatif.</p><input class="oin" id="oName" maxlength="20" autocomplete="given-name" placeholder="Ton prénom" value="${esc(ob.name||'')}">`},
+ {k:'motives',multi:MOT,ok:()=>ob.motives.length>0,html:()=>`<h1 class="oq">Pourquoi tu veux arrêter ?</h1><p class="osub">Choisis tout ce qui compte pour toi. On te le rappellera quand l'envie arrive.</p>`},
+ {k:'when',multi:WHEN,ok:()=>1,html:()=>`<h1 class="oq">Quand l'envie arrive-t-elle le plus ?</h1><p class="osub">Le bouton SOS te donnera des conseils adaptés.</p>`},
+ ...(hadData?[]:[{k:'since',single:SINCE,ok:()=>ob.since!=null,html:()=>`<h1 class="oq">Ta dernière fois, c'était…</h1><p class="osub">Pas de jugement. Ça sert juste à démarrer ton compteur.</p>`}]),
+ {k:'goal',single:GOALS,ok:()=>ob.goal!=null,html:()=>`<h1 class="oq">Ton premier objectif ?</h1><p class="osub">Tu pourras toujours aller plus loin.</p>`},
+ {k:'end',go:'Planter mon arbre',ok:()=>1,html:()=>`${tree}<h1 class="oq center">Ton arbre est planté${ob.name?', '+esc(ob.name):''} !</h1><p class="osub center">Objectif : ${ob.goal} jours. Arrose-le chaque jour en tenant bon, et appuie sur <b style="color:var(--acc)">SOS</b> dès qu'une envie arrive.</p>`}]}
+function oDraw(){const S=steps[os];
+ let h=S.html();
+ const list=S.multi||S.single;
+ if(list){const sel=S.multi?ob[S.k]:[ob[S.k]];h+=`<div class="opts">${list.map(([v,e,l])=>`<button class="opt" data-v="${v}" aria-pressed="${sel.includes(v)}"><span class="em">${e}</span>${l}<span class="ck">${sel.includes(v)?'✓':''}</span></button>`).join('')}</div>`}
+ const b=$('oBody');b.innerHTML=h;b.style.animation='none';b.offsetHeight;b.style.animation='';b.scrollTop=0;
+ $('oBar').style.width=(os/(steps.length-1)*100)+'%';
+ $('oBack').hidden=os===0;$('oSkip').hidden=os===0||os===steps.length-1;
+ $('oGo').textContent=S.go||'Continuer';$('oGo').disabled=!S.ok();
+ const n=$('oName');if(n){n.oninput=()=>{ob.name=n.value.trim()};n.onkeydown=e=>{if(e.key==='Enter')$('oGo').click()}}
+}
+$('oBody').addEventListener('click',e=>{const b=e.target.closest('.opt');if(!b)return;const S=steps[os];
+ let v=b.dataset.v;if(S.single&&typeof S.single[0][0]==='number')v=+v;
+ if(S.multi){const a=ob[S.k];a.includes(v)?a.splice(a.indexOf(v),1):a.push(v);oDraw()}
+ else{ob[S.k]=v;oDraw();setTimeout(()=>{if(steps[os]===S)oNext()},280)}});
+function oNext(){if(!steps[os].ok())return;if(os<steps.length-1){os++;oDraw()}else oFinish()}
+$('oGo').onclick=oNext;
+$('oBack').onclick=()=>{if(os>0){os--;oDraw()}};
+$('oSkip').onclick=()=>{os=steps.length-1;if(ob.goal==null)ob.goal=30;oDraw()};
+function oFinish(){
+ st.name=ob.name||'';st.motives=ob.motives;st.when=ob.when;st.goal=ob.goal||30;st.onboarded=1;
+ if(!hadData&&ob.since!=null&&!st.onbStartSet){st.start=Date.now()-ob.since*DAY;st.onbStartSet=1}
+ if(!st.reasons.trim()&&ob.motives.length){st.reasons=ob.motives.map(k=>MOT.find(m=>m[0]===k)[2]).join('.\n')+'.';$('reasons').value=st.reasons}
+ save();lastDay=-1;render();$('onb').classList.remove('show');toast(st.name?`Bonne route, ${st.name} !`:'Bonne route !')}
+function openOnb(){ob={name:st.name||'',motives:[...(st.motives||[])],when:[...(st.when||[])],since:null,goal:st.goal||null};os=0;buildSteps();oDraw();$('onb').classList.add('show')}
+$('redoOnb').onclick=openOnb;
+if(!st.onboarded)openOnb();
+
 }
 </script>
 <script>if('serviceWorker' in navigator){addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}</script>
