@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="Racines">
 <title>Racines — libre</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;600;700;800;900&family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* VOICE: complice, chaleureux, jamais moralisateur
    IDEA: un arbre qu'on fait pousser chaque jour sans porno
@@ -26,7 +26,7 @@
 --soft:light-dark(#e3efe1,#1d3529);--shadow:light-dark(0 2px 10px rgba(16,38,29,.07),0 2px 10px rgba(0,0,0,.3));--navh:72px}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Nunito,system-ui,sans-serif;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 'Fira Sans',system-ui,sans-serif;overflow-x:clip}
 /* barre du haut */
 .appbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;
  padding:calc(10px + env(safe-area-inset-top)) max(4vw,16px) 10px;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px)}
@@ -85,7 +85,7 @@ button:focus-visible,textarea:focus-visible{outline:3px solid var(--acc);outline
 .bd.on .md{background:radial-gradient(circle at 35% 30%,#ffd27a,#f0a830);color:#5a3a06;box-shadow:0 3px 0 #c98714}
 .bd:not(.on){color:var(--mute)}.bd:not(.on) .md::after{content:"";position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239bb3a6'%3E%3Cpath d='M7 10V8a5 5 0 0 1 10 0v2h1v10H6V10zm2 0h6V8a3 3 0 0 0-6 0z'/%3E%3C/svg%3E") center/14px no-repeat}
 /* moi */
-textarea{width:100%;font:16px/1.5 Nunito,sans-serif;border-radius:16px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:12px;min-height:110px}
+textarea{width:100%;font:16px/1.5 'Fira Sans',sans-serif;border-radius:16px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:12px;min-height:110px}
 .ghost{background:transparent;border:2px solid var(--line)}
 .note{font-size:14px;color:var(--mute)}
 .setrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -120,7 +120,7 @@ textarea{width:100%;font:16px/1.5 Nunito,sans-serif;border-radius:16px;border:1p
 .opt .ck{margin-left:auto;width:24px;height:24px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;color:#fff;font-size:14px}
 .opt[aria-pressed=true]{border-color:var(--g);background:color-mix(in srgb,var(--g) 9%,var(--card))}
 .opt[aria-pressed=true] .ck{background:var(--g);border-color:var(--g)}
-.oin{width:100%;font:700 20px Nunito,sans-serif;padding:16px;border-radius:18px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.oin{width:100%;font:700 20px 'Fira Sans',sans-serif;padding:16px;border-radius:18px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
 .oin:focus{outline:none;border-color:var(--g)}
 .ogo{max-width:520px;width:100%;margin:0 auto;background:var(--g);color:#fff;font-size:18px;min-height:58px;border-radius:18px;box-shadow:0 4px 0 color-mix(in srgb,var(--g) 70%,#000)}
 .ogo:disabled{opacity:.4;box-shadow:none}
@@ -140,7 +140,7 @@ textarea{width:100%;font:16px/1.5 Nunito,sans-serif;border-radius:16px;border:1p
 .toast.show{transform:translateX(-50%) translateY(0)}
 ul.log{margin:6px 0 0;padding-left:20px;color:var(--mute)}
 /* rappel du soir */
-.rtime{font:900 28px Nunito,sans-serif;color:var(--g);background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:6px 12px;width:auto}
+.rtime{font:900 28px 'Fira Sans',sans-serif;color:var(--g);background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:6px 12px;width:auto}
 .rbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-weight:800;min-height:48px;border-radius:14px;padding:10px 16px;flex:1 1 200px}
 .rbtn.pri{background:var(--g);color:#fff}.rbtn.sec{border:2px solid var(--line);color:var(--ink)}
 /* confidentialité */
@@ -161,6 +161,74 @@ ul.log{margin:6px 0 0;padding-left:20px;color:var(--mute)}
 .veil{position:fixed;inset:0;z-index:35;background:var(--bg);display:none}.veil.show{display:block}
 .ov.top{z-index:50}
 @media(min-width:760px){.tabs{left:50%;right:auto;transform:translateX(-50%);width:520px;bottom:14px;border:1px solid var(--line);border-radius:26px;padding-bottom:6px}}
+
+/* ===== Proposition « Sous-bois » =====
+   Couleurs : lichen #E6EADF · écorce #2E2620 · mousse #3D6B35 · terre #6B4A33 · sève #E3A72F
+   Lettres : Bitter (panneaux de sentier en bois) + Fira Sans (texte)
+   Idée : la coupe du terrain. Au-dessus l'arbre, en dessous les racines qui s'allongent avec les jours. */
+:root{--bg:light-dark(#E6EADF,#1C1915);--card:light-dark(#F4F5EF,#27221C);--ink:light-dark(#2E2620,#EDE6D6);--mute:light-dark(#6E665C,#A89F90);
+--g:light-dark(#3D6B35,#8FBF7F);--g2:light-dark(#6E9A4F,#B5D69E);--acc:#E3A72F;--line:light-dark(#D3D6C8,#3A332A);--soft:light-dark(#DCE3D2,#2E3A26);
+--soil1:light-dark(#6B4A33,#3E2C1F);--soil2:light-dark(#4A3222,#251A12);--shadow:none;--disp:Bitter,Georgia,serif}
+body{font-size:16px;line-height:1.55}
+h1,h2,.vtitle,.oq,.brand,.lvl,.qt,.kv b,.dcount b,.bd .md b{font-family:var(--disp)}
+.brand{font-weight:800;letter-spacing:0}
+.vtitle{font-weight:800;font-size:30px;letter-spacing:-.3px}h2{font-weight:700}
+.card{border:1px solid var(--line);border-radius:14px}
+.icon{border:1px solid var(--line)}
+button{font-weight:600}
+.label{text-transform:none;letter-spacing:0;font:600 15px var(--disp);color:var(--mute);margin-bottom:8px}
+.qt{font-weight:500;font-size:clamp(20px,5vw,24px);line-height:1.35}.qa{font-weight:500}
+.truth{font-weight:500;font-size:17px}
+/* la coupe de terrain */
+.tree{border-radius:22px 22px 0 0;box-shadow:none;height:clamp(220px,58vw,320px)}
+.lvchip{border-radius:8px;font:700 14px var(--disp);background:color-mix(in srgb,var(--card) 90%,transparent)}
+.soil{position:relative;height:210px;border-radius:0 0 22px 22px;overflow:hidden;background:linear-gradient(180deg,#3f7f34 0 8px,var(--soil1) 8px,var(--soil1) 46%,var(--soil2))}
+.soil::before{content:"";position:absolute;inset:8px 0 0;background:repeating-linear-gradient(180deg,transparent 0 38px,rgba(0,0,0,.08) 38px 40px)}
+.soil svg{position:absolute;inset:0;width:100%;height:100%}
+.roots path{fill:none;stroke:#D9B98E;stroke-linecap:round}
+.roots .gr{stroke-dasharray:1;stroke-dashoffset:1;animation:grow 1.8s cubic-bezier(.3,.7,.3,1) forwards}
+@keyframes grow{to{stroke-dashoffset:0}}
+.dcount{position:absolute;left:20px;bottom:16px;color:#F4EBDD;display:flex;flex-direction:column;line-height:1}
+.dcount b{font-size:84px;font-weight:900;letter-spacing:-3px;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.dcount>span{font:700 19px var(--disp);margin-top:2px}
+.dcount small{font-size:13px;opacity:.8;margin-top:6px;font-weight:500}
+.stat{margin:14px 0 0;padding:4px 2px;background:none;border:0;border-radius:0}
+.lvrow{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.lvl{font-size:19px;font-weight:700}
+.meter{height:6px;border-radius:3px;margin:8px 0 2px}
+.meter i{background:var(--g);border-radius:3px}
+.kvs{gap:0;margin-top:14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.kv{background:none;border-radius:0;padding:12px 6px}
+.kv+.kv{border-left:1px solid var(--line)}
+.kv b{font-size:26px;font-weight:800}
+/* défis */
+.ch{background:var(--card);border:1px solid var(--line);border-radius:10px;font-weight:500}
+.ch .box{border-radius:5px;border-color:var(--ink)}
+.ch.on .box{background:var(--acc);border-color:var(--acc);color:var(--ink)}
+.ch em{font-family:var(--disp);font-weight:700}
+.dprog{height:6px}.dprog i{background:var(--acc)}
+h2 .pill{background:none;border:1px solid var(--line);border-radius:6px;color:var(--ink);font-family:var(--disp)}
+/* badges : des balises de sentier */
+.bd{background:none;font-weight:600;padding:12px 6px}
+.bd .md{width:72px;height:46px;border-radius:5px;background:none;border:2px dashed var(--line);color:var(--mute)}
+.bd.on .md{background:var(--acc);border:0;color:#2E2620;box-shadow:inset 0 -4px 0 rgba(0,0,0,.14)}
+.bd .md b{font-weight:900}
+/* barre d'onglets */
+.tabs{background:var(--card);backdrop-filter:none}
+.tab{font-weight:500}.tab[aria-selected=true]{font-weight:700}
+.sostab{color:var(--ink);margin-top:-20px;font-weight:600}
+.sostab span.b{width:66px;height:50px;border-radius:12px;background:var(--acc);color:#2E2620;font:900 19px var(--disp);border:0;box-shadow:0 4px 0 #A97815;animation:none}
+.sostab:active span.b{transform:translateY(3px);box-shadow:0 1px 0 #A97815}
+.breath{background:radial-gradient(circle at 40% 35%,var(--g2),var(--g));font-family:var(--disp)}
+.ghost{border-width:1px}
+.opt{box-shadow:none;border:1px solid var(--line);border-radius:12px}
+.opt[aria-pressed=true]{border:2px solid var(--g)}
+.ogo{border-radius:12px;font-family:var(--disp);font-weight:800}
+.oin{border-radius:12px}
+.soil::after{content:"";position:absolute;inset:auto 0 0 0;height:62%;background:linear-gradient(90deg,rgba(30,20,12,.55),rgba(30,20,12,.15) 55%,transparent 80%);pointer-events:none}
+.dcount{z-index:1;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.bd .md svg[style*=absolute]{display:none}
+@media(prefers-reduced-motion:reduce){.roots .gr{animation:none;stroke-dashoffset:0}}
 </style>
 </head>
 <body>
@@ -174,17 +242,11 @@ ul.log{margin:6px 0 0;padding-left:20px;color:var(--mute)}
   <section class="view on" id="v-home" aria-label="Accueil">
     <p class="hello" id="hello" hidden></p>
     <div class="tree"><svg id="tree" viewBox="0 0 400 320" preserveAspectRatio="xMidYMax slice" aria-label="Ton arbre"></svg><div class="lvchip" id="lvchip">Graine</div></div>
+    <div class="soil"><svg id="roots" viewBox="0 0 400 210" preserveAspectRatio="xMidYMin slice" aria-hidden="true"></svg>
+      <div class="dcount"><b id="days">0</b><span><span id="dlab">jour</span> de racines</span><small id="clock">et 0 h 00 min</small></div></div>
     <div class="stat">
-      <div class="counter">
-        <div class="ring"><svg viewBox="0 0 120 120"><circle class="tr" cx="60" cy="60" r="50"/><circle class="pr" id="ring" cx="60" cy="60" r="50" pathLength="100" stroke-dasharray="0 100"/></svg>
-          <div class="num"><b id="days">0</b><span id="dlab">jour</span></div></div>
-        <div class="cinfo">
-          <div class="lvl" id="lvl">Niveau 1 · Graine</div>
-          <div class="meter"><i id="bar"></i></div>
-          <div class="note" id="xpnote"></div>
-          <div class="note" id="clock" style="margin-top:4px">et 0 h 00 min</div>
-        </div>
-      </div>
+      <div class="lvrow"><div class="lvl" id="lvl">Niveau 1 · Graine</div><div class="note" id="xpnote"></div></div>
+      <div class="meter"><i id="bar"></i></div>
       <div class="kvs">
         <div class="kv"><b id="wins">0</b><span>envies vaincues</span></div>
         <div class="kv"><b id="best">0</b><span>record (jours)</span></div>
@@ -391,13 +453,34 @@ function drawTree(d){
   <rect class="night" x="-400" y="-300" width="1200" height="900" fill="#0a1632" opacity=".2"/>`;
 }
 
+
+// ---- racines sous la terre : elles s'allongent avec les jours ----
+let rootsDay=-1;
+function drawRoots(d){
+  const D=Math.floor(d);if(D===rootsDay)return;rootsDay=D;
+  let seed=1234567;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+  const g=Math.min(1,Math.log(1+D)/Math.log(181)), F=n=>n.toFixed(1);
+  let out='';
+  function root(x,y,a,len,w,k){
+    const x2=x+Math.sin(a)*len, y2=y+Math.cos(a)*len, cx=x+Math.sin(a+(rnd()-.5)*.9)*len*.5, cy=y+Math.cos(a)*len*.5;
+    out+=`<path class="gr" pathLength="1" style="animation-delay:${(k*.18).toFixed(2)}s" d="M${F(x)} ${F(y)}Q${F(cx)} ${F(cy)} ${F(x2)} ${F(y2)}" stroke-width="${F(w)}" opacity="${F(.95-k*.12)}"/>`;
+    if(k>=2+Math.round(g*3)||w<.7)return;
+    const n=rnd()<.4?3:2;
+    for(let i=0;i<n;i++)root(x2,y2,a+(i-(n-1)/2)*(.55+rnd()*.3)+(rnd()-.5)*.3,len*(.62+rnd()*.15),w*.62,k+1);
+  }
+  const main=2+Math.round(g*3), L=18+g*70, W=3+g*7;
+  root(200,4,0,L*1.1,W,0);
+  for(let i=0;i<main;i++){const side=i%2?1:-1,a=side*(.5+(i>>1)*.35+rnd()*.2);root(200+side*3,4,a,L*(.75+rnd()*.2),W*.7,1)}
+  $('roots').innerHTML=`<g class="roots">${out}</g>`;
+}
+
 let lastDay=-1;
 function render(){
   const d=days(), D=Math.floor(d);
-  $('days').textContent=D;$('dlab').textContent=D>1?'jours':'jour';
+  drawRoots(d);$('days').textContent=D;$('dlab').textContent=D>1?'jours':'jour';
   const MS=[1,3,7,14,30,60,90,180,365,730];const nm=MS.find(m=>m>D)||D+365, pm=[0,...MS].filter(m=>m<=D).pop()||0;
   const gl=st.goal&&D<st.goal?st.goal:0;$('nextm').textContent=gl?(gl-D)+' j':nm+' j';$('nextlab').textContent=gl?'avant ton objectif':'prochain palier';
-  $('hello').hidden=!st.name;$('hello').textContent=st.name?`Salut ${st.name} 👋`:'';$('ring').setAttribute('stroke-dasharray',`${Math.max(2,(d-pm)/(nm-pm)*100).toFixed(1)} 100`);
+  $('hello').hidden=!st.name;$('hello').textContent=st.name?`Salut ${st.name} 👋`:'';($('ring')||{setAttribute(){}}).setAttribute('stroke-dasharray',`${Math.max(2,(d-pm)/(nm-pm)*100).toFixed(1)} 100`);
   const rem=(d-D)*24; $('clock').textContent=`et ${Math.floor(rem)} h ${String(Math.floor((rem%1)*60)).padStart(2,'0')} min sans porno`;$('clock').textContent=DSC($('clock').textContent);document.title=st.priv.disc?'Racines':'Racines — libre';
   for(const [id,k] of [['swPin',!!st.priv.pin],['swDisc',st.priv.disc],['swBlur',st.priv.blur],['swNotes',st.priv.notes]])$(id).setAttribute('aria-checked',k);
   $('reasons').disabled=!st.priv.notes;$('reasons').placeholder=st.priv.notes?"Ex : je veux retrouver de l'énergie, être plus présent avec ma famille, arrêter de perdre mes soirées…":'Notes désactivées dans Confidentialité';$('trigTxt').style.display=st.priv.notes?'':'none';
